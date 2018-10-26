@@ -17,6 +17,9 @@ func (w *Watcher) runAllocationWatcher() {
 	}
 
 	for {
+
+		var maxFound uint64
+
 		allocations, meta, err := w.nomadClient.Allocations().List(q)
 
 		// If Nomad returned an error, log this and sleep.
@@ -35,29 +38,31 @@ func (w *Watcher) runAllocationWatcher() {
 			continue
 		}
 
-		if !w.indexHasChange(q.WaitIndex, meta.LastIndex) {
+		if !w.indexHasChange(meta.LastIndex, q.WaitIndex) {
 			log.Debug().Msg("allocations index has not changed")
 			continue
 		}
 
+		maxFound = meta.LastIndex
 		log.Debug().Msg("allocations index has changed")
 
 		for _, alloc := range allocations {
 
-			if !w.indexHasChange(w.lastChangeIndex, alloc.ModifyIndex) {
+			if !w.indexHasChange(alloc.ModifyIndex, maxFound) {
 				log.Debug().Str("alloc-id", alloc.ID).Msg("allocation index has not changed")
 				continue
 			}
 
-			log.Info().Str("alloc-id", alloc.ID).Msg("allocation index has changed")
-
-			if len(alloc.TaskStates) == 0 {
+			if len(alloc.TaskGroup) == 0 {
 				continue
 			}
 
+			maxFound = alloc.ModifyIndex
+			log.Info().Str("alloc-id", alloc.ID).Msg("allocation index has changed")
+
 			w.mshChan <- alloc
 		}
-		q.WaitIndex = meta.LastIndex
-		w.lastChangeIndex = meta.LastIndex
+		q.WaitIndex = maxFound
+		w.lastChangeIndex = maxFound
 	}
 }

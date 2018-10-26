@@ -17,6 +17,9 @@ func (w *Watcher) runDeploymentWatcher() {
 	}
 
 	for {
+
+		var maxFound uint64
+
 		deployments, meta, err := w.nomadClient.Deployments().List(q)
 		// If Nomad returned an error, log this and sleep.
 		// The sleep is needed, otherwise we will just call the failing endpoint over and over.
@@ -34,25 +37,27 @@ func (w *Watcher) runDeploymentWatcher() {
 			continue
 		}
 
-		if !w.indexHasChange(q.WaitIndex, meta.LastIndex) {
+		if !w.indexHasChange(meta.LastIndex, q.WaitIndex) {
 			log.Debug().Msg("deployments index has not changed")
 			continue
 		}
 
+		maxFound = meta.LastIndex
 		log.Debug().Msg("deployments index has changed")
 
 		for _, deployment := range deployments {
 
-			if !w.indexHasChange(w.lastChangeIndex, deployment.ModifyIndex) {
+			if !w.indexHasChange(deployment.ModifyIndex, maxFound) {
 				log.Debug().Str("job", deployment.JobID).Msg("job deployment index has not changed")
 				continue
 			}
 
+			maxFound = deployment.ModifyIndex
 			log.Info().Str("job", deployment.JobID).Msg("job deployment index has changed")
 
 			w.mshChan <- deployment
 		}
-		q.WaitIndex = meta.LastIndex
-		w.lastChangeIndex = meta.LastIndex
+		q.WaitIndex = maxFound
+		w.lastChangeIndex = maxFound
 	}
 }
