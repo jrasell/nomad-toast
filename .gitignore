@@ -1,0 +1,9 @@
+# Goreleaser directory
+/dist/
+
+# Local builds directory
+/bin/
+
+# Goland/IntelliJ
+/.idea/
+*.iml
