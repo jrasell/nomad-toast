@@ -67,8 +67,8 @@ func (w *Watcher) Run() {
 	}
 }
 
-func (w *Watcher) indexHasChange(o, n uint64) bool {
-	if n < o {
+func (w *Watcher) indexHasChange(new, old uint64) bool {
+	if new < old {
 		return false
 	}
 	return true

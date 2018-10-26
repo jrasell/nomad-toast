@@ -40,7 +40,7 @@ func (n *Notifier) formatDeploymentMessage(d *api.Deployment) {
 		m.Color = dangerColour
 	}
 
-	n.sendNotification(*m)
+	n.sendNotification(d.ID, *m)
 }
 
 func (n *Notifier) formatAllocationMessage(d *api.AllocationListStub) {
@@ -78,5 +78,5 @@ func (n *Notifier) formatAllocationMessage(d *api.AllocationListStub) {
 		m.Color = dangerColour
 	}
 
-	n.sendNotification(*m)
+	n.sendNotification(d.ID, *m)
 }
