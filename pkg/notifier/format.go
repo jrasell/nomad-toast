@@ -2,6 +2,7 @@ package notifier
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/hashicorp/nomad/api"
 	"github.com/hashicorp/nomad/nomad/structs"
@@ -14,15 +15,15 @@ func (n *Notifier) formatDeploymentMessage(d *api.Deployment) {
 	f[0] = slack.AttachmentField{Title: "Job", Value: d.JobID, Short: true}
 	f[1] = slack.AttachmentField{Title: "Status", Value: d.StatusDescription, Short: true}
 
-	for n, tg := range d.TaskGroups {
+	for name, tg := range d.TaskGroups {
 
-		dt := fmt.Sprintf("%s %s\n", deadlineText, tg.RequireProgressBy)
+		dt := fmt.Sprintf("%s %s\n", deadlineText, n.formatTimeToSecond(tg.RequireProgressBy))
 		da := fmt.Sprintf("%s %v\n", desiredAllocsText, tg.DesiredTotal)
 		pa := fmt.Sprintf("%s %v\n", placedAllocsText, tg.PlacedAllocs)
 		ua := fmt.Sprintf("%s %v\n", unhealthyAllocsText, tg.UnhealthyAllocs)
 
 		f = append(f, slack.AttachmentField{
-			Title: fmt.Sprintf("Task Group: %s", n),
+			Title: fmt.Sprintf("Task Group: %s", name),
 			Value: dt + da + pa + ua,
 			Short: false,
 		})
@@ -79,4 +80,8 @@ func (n *Notifier) formatAllocationMessage(d *api.AllocationListStub) {
 	}
 
 	n.sendNotification(d.ID, *m)
+}
+
+func (n *Notifier) formatTimeToSecond(t time.Time) time.Time {
+	return time.Date(t.Year(), t.Month(), t.Day(), t.Hour(), t.Minute(), t.Second(), 0, t.Location())
 }
