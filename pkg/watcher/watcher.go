@@ -34,14 +34,28 @@ const (
 
 // NewWatcher builds a new watcher struct in order to run the nomad-toast watcher task.
 // The message channel is importantly where events are sent for notification.
-func NewWatcher(cfg *config.NomadConfig, et EndpointType, mChan chan interface{}) (*Watcher, error) {
+func NewWatcher(cfg *config.NomadConfig, et EndpointType, mChan chan interface{}) (*Watcher, string, error) {
 
 	d := api.DefaultConfig()
 	d.Address = cfg.NomadAddress
 
+	if cfg.NomadRegion != "" {
+		d.Region = cfg.NomadRegion
+	}
+
 	client, err := api.NewClient(d)
 	if err != nil {
-		return nil, err
+		return nil, "", err
+	}
+
+	var r string
+
+	if cfg.NomadRegion == "" {
+		r, err = getNomadRegion(client)
+		if err != nil {
+			return nil, "", err
+		}
+		cfg.NomadRegion = r
 	}
 
 	return &Watcher{
@@ -51,7 +65,15 @@ func NewWatcher(cfg *config.NomadConfig, et EndpointType, mChan chan interface{}
 		lastChangeIndex: 1,
 		nomadClient:     client,
 		mshChan:         mChan,
-	}, nil
+	}, r, nil
+}
+
+func getNomadRegion(c *api.Client) (string, error) {
+	info, err := c.Agent().Self()
+	if err != nil {
+		return "", err
+	}
+	return info.Config["Region"].(string), nil
 }
 
 // Run triggers the watcher of configured type to be run.

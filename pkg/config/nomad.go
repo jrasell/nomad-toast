@@ -9,11 +9,13 @@ import (
 type NomadConfig struct {
 	AllowStale   bool
 	NomadAddress string
+	NomadRegion  string
 }
 
 const (
 	configKeyNomadAllowStale = "nomad-allow-stale"
 	configKeyNomadAddress    = "nomad-address"
+	configKeyNomadRegion     = "nomad-region"
 )
 
 // GetNomadConfig uses viper to populate a NomadConfig struct with values.
@@ -21,6 +23,7 @@ func GetNomadConfig() NomadConfig {
 	return NomadConfig{
 		AllowStale:   viper.GetBool(configKeyNomadAllowStale),
 		NomadAddress: viper.GetString(configKeyNomadAddress),
+		NomadRegion:  viper.GetString(configKeyNomadRegion),
 	}
 }
 
@@ -47,6 +50,19 @@ func RegisterNomadConfig(cmd *cobra.Command) {
 			longOpt      = "nomad-address"
 			defaultValue = "http://localhost:4646"
 			description  = "The Nomad HTTP(S) API address"
+		)
+
+		flags.String(longOpt, defaultValue, description)
+		_ = viper.BindPFlag(key, flags.Lookup(longOpt))
+		viper.SetDefault(key, defaultValue)
+	}
+
+	{
+		const (
+			key          = configKeyNomadRegion
+			longOpt      = "nomad-region"
+			defaultValue = ""
+			description  = "The Nomad region to query."
 		)
 
 		flags.String(longOpt, defaultValue, description)

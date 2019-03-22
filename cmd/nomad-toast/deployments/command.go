@@ -41,13 +41,13 @@ func runDeployments(_ *cobra.Command, _ []string) {
 		os.Exit(sysexits.Software)
 	}
 
-	w, err := watcher.NewWatcher(cfg.Nomad, watcher.Deployments, n.MsgChan)
+	w, region, err := watcher.NewWatcher(cfg.Nomad, watcher.Deployments, n.MsgChan)
 	if err != nil {
 		log.Error().Err(err).Msg("unable to build new deployments watcher")
 		os.Exit(sysexits.Software)
 	}
 
-	go n.Run()
+	go n.Run(region)
 	go w.Run()
 
 	sigCh := make(chan os.Signal, 5)
