@@ -1,7 +1,6 @@
 package allocations
 
 import (
-	"fmt"
 	"os"
 	"os/signal"
 	"syscall"
@@ -47,8 +46,6 @@ func runDeployments(_ *cobra.Command, _ []string) {
 		log.Error().Err(err).Msg("unable to build new allocations watcher")
 		os.Exit(sysexits.Software)
 	}
-
-	fmt.Println(region)
 
 	go n.Run(region)
 	go w.Run()
