@@ -2,6 +2,7 @@ package notifier
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/hashicorp/nomad/api"
@@ -29,7 +30,11 @@ func (n *Notifier) formatDeploymentMessage(d *api.Deployment) {
 		})
 	}
 
-	m := &slack.Attachment{Fallback: "", Text: "Nomad Deployment Notification", Fields: f}
+	m := &slack.Attachment{
+		Fallback: "",
+		Text:     fmt.Sprintf("Nomad Deployment Notification: %s", strings.ToUpper(n.nomadRegion)),
+		Fields:   f,
+	}
 	m.Fields = f
 
 	switch d.Status {
@@ -67,7 +72,11 @@ func (n *Notifier) formatAllocationMessage(d *api.AllocationListStub) {
 		})
 	}
 
-	m := &slack.Attachment{Fallback: "", Text: "Nomad Allocations Notification", Fields: f}
+	m := &slack.Attachment{
+		Fallback: "",
+		Text:     fmt.Sprintf("Nomad Allocations Notification: %s", strings.ToUpper(n.nomadRegion)),
+		Fields:   f,
+	}
 	m.Fields = f
 
 	switch d.ClientStatus {

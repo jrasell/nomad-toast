@@ -17,6 +17,8 @@ type Notifier struct {
 	state  *notifications
 
 	MsgChan chan interface{}
+
+	nomadRegion string
 }
 
 type notifierConfig struct {
@@ -46,8 +48,10 @@ func NewNotifier(cfg *config.SlackConfig, et watcher.EndpointType) (*Notifier, e
 }
 
 // Run triggers the notifier to start listening for messages.
-func (n *Notifier) Run() {
+func (n *Notifier) Run(region string) {
 	log.Info().Msgf("starting %s notifier", n.state.nomadType)
+
+	n.nomadRegion = region
 
 	for {
 		select {
