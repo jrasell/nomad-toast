@@ -10,6 +10,12 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/sean-/sysexits"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
+)
+
+const (
+	cfgKeyAllocIncludeCStates = "include-states"
+	cfgKeyAllocExcludeCStates = "exclude-states"
 )
 
 // RegisterCommand is used to register the deployments nomad-toast command.
@@ -22,6 +28,31 @@ func RegisterCommand(rootCmd *cobra.Command) error {
 		},
 	}
 
+	flags := cmd.Flags()
+	{
+		const (
+			key         = cfgKeyAllocIncludeCStates
+			longOpt     = cfgKeyAllocIncludeCStates
+			description = "Whitelist of allocation client states to notify about."
+		)
+
+		flags.StringSlice(longOpt, []string{}, description)
+		_ = viper.BindPFlag(key, flags.Lookup(longOpt))
+		viper.SetDefault(key, []string{})
+	}
+
+	{
+		const (
+			key         = cfgKeyAllocExcludeCStates
+			longOpt     = cfgKeyAllocExcludeCStates
+			description = "Blacklist of allocation client states to notify about. Takes priority over whitelisting."
+		)
+
+		flags.StringSlice(longOpt, []string{}, description)
+		_ = viper.BindPFlag(key, flags.Lookup(longOpt))
+		viper.SetDefault(key, []string{})
+	}
+
 	rootCmd.AddCommand(cmd)
 
 	return nil
@@ -31,7 +62,7 @@ func runDeployments(_ *cobra.Command, _ []string) {
 
 	cfg, err := getConfig()
 	if err != nil {
-		log.Error().Err(err).Msg("unable to load allocations config")
+		log.Error().Err(err).Msg("unable to load nomad-toast config")
 		os.Exit(sysexits.Software)
 	}
 
