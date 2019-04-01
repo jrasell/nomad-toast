@@ -30,12 +30,13 @@ func (n *Notifier) formatDeploymentMessage(d *api.Deployment) {
 		})
 	}
 
-	m := &slack.Attachment{
-		Fallback: "",
-		Text:     fmt.Sprintf("Nomad Deployment Notification: %s", strings.ToUpper(n.nomadRegion)),
-		Fields:   f,
-	}
+	m := &slack.Attachment{Fallback: "", Fields: f}
 	m.Fields = f
+	m.Title = fmt.Sprintf("Nomad Deployment Notification: %s", strings.ToUpper(n.nomadRegion))
+
+	if n.config.ui.HashiUIEnabled {
+		m.TitleLink = fmt.Sprintf("%s/nomad/%s/deployments/%s/info", n.config.ui.HashiUIHost, n.nomadRegion, d.ID)
+	}
 
 	switch d.Status {
 	case structs.DeploymentStatusRunning, structs.DeploymentStatusPaused:
@@ -72,12 +73,13 @@ func (n *Notifier) formatAllocationMessage(d *api.AllocationListStub) {
 		})
 	}
 
-	m := &slack.Attachment{
-		Fallback: "",
-		Text:     fmt.Sprintf("Nomad Allocations Notification: %s", strings.ToUpper(n.nomadRegion)),
-		Fields:   f,
-	}
+	m := &slack.Attachment{Fallback: "", Fields: f}
 	m.Fields = f
+	m.Title = fmt.Sprintf("Nomad Allocation Notification: %s", strings.ToUpper(n.nomadRegion))
+
+	if n.config.ui.HashiUIEnabled {
+		m.TitleLink = fmt.Sprintf("%s/nomad/%s/allocations/%s/info", n.config.ui.HashiUIHost, n.nomadRegion, d.ID)
+	}
 
 	switch d.ClientStatus {
 	case structs.AllocClientStatusPending:

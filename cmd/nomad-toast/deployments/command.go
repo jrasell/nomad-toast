@@ -35,7 +35,7 @@ func runDeployments(_ *cobra.Command, _ []string) {
 		os.Exit(sysexits.Software)
 	}
 
-	n, err := notifier.NewNotifier(cfg.Slack, watcher.Allocations)
+	n, err := notifier.NewNotifier(cfg.Slack, cfg.UI, watcher.Allocations)
 	if err != nil {
 		log.Error().Err(err).Msg("unable to build new deployments notifier")
 		os.Exit(sysexits.Software)
