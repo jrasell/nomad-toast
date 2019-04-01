@@ -35,6 +35,7 @@ func main() {
 	config.RegisterLogConfig(rootCmd)
 	config.RegisterNomadConfig(rootCmd)
 	config.RegisterSlackConfig(rootCmd)
+	config.RegisterUIConfig(rootCmd)
 
 	if err := registerCommands(rootCmd); err != nil {
 		fmt.Println("error registering commands:", err)

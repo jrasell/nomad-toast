@@ -23,6 +23,7 @@ type Notifier struct {
 
 type notifierConfig struct {
 	slack *config.SlackConfig
+	ui    *config.UI
 }
 
 type notifications struct {
@@ -38,11 +39,11 @@ type notification struct {
 
 // NewNotifier builds a new notifier struct in order to run the nomad-toast notifier task.
 // The message channel is importantly where events are received from the watcher.
-func NewNotifier(cfg *config.SlackConfig, et watcher.EndpointType) (*Notifier, error) {
+func NewNotifier(sCfg *config.SlackConfig, fCfg *config.UI, et watcher.EndpointType) (*Notifier, error) {
 	return &Notifier{
-		config:  &notifierConfig{slack: cfg},
+		config:  &notifierConfig{slack: sCfg, ui: fCfg},
 		MsgChan: make(chan interface{}),
-		slack:   slack.New(cfg.AuthToken),
+		slack:   slack.New(sCfg.AuthToken),
 		state:   &notifications{notifications: make(map[string]notification), nomadType: et},
 	}, nil
 }
