@@ -13,7 +13,7 @@ import (
 func (n *Notifier) formatDeploymentMessage(d *api.Deployment) {
 
 	f := make([]slack.AttachmentField, 1+len(d.TaskGroups))
-	f[0] = slack.AttachmentField{Title: "Job", Value: d.JobID, Short: true}
+	f[0] = slack.AttachmentField{Title: "Job", Value: fmt.Sprintf("%s (version:%v)", d.JobID, d.JobVersion), Short: true}
 	f[1] = slack.AttachmentField{Title: "Status", Value: d.StatusDescription, Short: true}
 
 	for name, tg := range d.TaskGroups {
