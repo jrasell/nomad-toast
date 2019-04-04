@@ -33,7 +33,7 @@ func RegisterCommand(rootCmd *cobra.Command) error {
 		const (
 			key         = cfgKeyAllocIncludeCStates
 			longOpt     = cfgKeyAllocIncludeCStates
-			description = "Whitelist of allocation client states to notify about."
+			description = "Whitelist allocation client states. If specified, *only* these states will be included in notifications."
 		)
 
 		flags.StringSlice(longOpt, []string{}, description)
@@ -45,7 +45,7 @@ func RegisterCommand(rootCmd *cobra.Command) error {
 		const (
 			key         = cfgKeyAllocExcludeCStates
 			longOpt     = cfgKeyAllocExcludeCStates
-			description = "Blacklist of allocation client states to notify about. Takes priority over whitelisting."
+			description = "List of allocation client states that will be excluded from notifications. Takes priority over include-states."
 		)
 
 		flags.StringSlice(longOpt, []string{}, description)
