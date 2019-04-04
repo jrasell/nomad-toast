@@ -1,11 +1,11 @@
 package watcher
 
 import (
+	"strings"
 	"time"
 
-	"github.com/jrasell/nomad-toast/pkg/config"
-
 	"github.com/hashicorp/nomad/api"
+	"github.com/jrasell/nomad-toast/pkg/config"
 	"github.com/rs/zerolog/log"
 )
 
@@ -71,16 +71,16 @@ func (w *Watcher) runAllocationWatcher() {
 
 // isFiltered checks whether a given update about a notification is to be filtered or not
 func isFiltered(alloc *api.AllocationListStub, allocCfg *config.AllocConfig) bool {
-	for _, cs := range allocCfg.ExcludeStates {
-		if alloc.ClientStatus == cs {
+	for i := range allocCfg.ExcludeStates {
+		if strings.ToLower(alloc.ClientStatus) == strings.ToLower(allocCfg.ExcludeStates[i]) {
 			log.Debug().Str("alloc-id", alloc.ID).Str("client-status", alloc.ClientStatus).Msg("allocation client status blacklisted, omitting")
 			return true
 		}
 	}
 
 	if allocCfg.IncludeStates != nil {
-		for _, cs := range allocCfg.IncludeStates {
-			if alloc.ClientStatus == cs {
+		for i := range allocCfg.IncludeStates {
+			if strings.ToLower(alloc.ClientStatus) == strings.ToLower(allocCfg.IncludeStates[i]) {
 				return false
 			}
 		}
