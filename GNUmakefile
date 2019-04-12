@@ -1,7 +1,11 @@
 default: check test build
 
-tools: ## Install the tools used to test and build
+build-tools:
 	@echo "==> Installing build tools"
+	go get github.com/ahmetb/govvv
+
+tools: ## Install the tools used to test and build
+	@echo "==> Installing tools"
 	go get github.com/ahmetb/govvv
 	go get github.com/alecthomas/gometalinter
 	go get github.com/goreleaser/goreleaser
