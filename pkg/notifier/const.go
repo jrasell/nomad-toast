@@ -9,6 +9,7 @@ const (
 	desiredAllocsText   = "Desired Allocations:       "
 	placedAllocsText    = "Placed Allocations:         "
 	unhealthyAllocsText = "Unhealthy Allocations:   "
+	healthyAllocsText   = "Healthy Allocations:       "
 
 	taskStateText    = "Allocation State:               "
 	taskClientStatus = "Client Status:                    "
