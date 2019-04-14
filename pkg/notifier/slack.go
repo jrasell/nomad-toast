@@ -22,6 +22,9 @@ func (n *Notifier) sendNewMsg(nomadID string, msg slack.Attachment) {
 		log.Error().Err(err).Str("channel", chanID).Msg("failed to send new Slack notification")
 		return
 	}
+	if n.chanID == nil {
+		n.chanID = &chanID
+	}
 
 	n.newNotifierState(nomadID, ts, msg)
 
@@ -33,7 +36,7 @@ func (n *Notifier) sendUpdateMsg(id, ts string, msg slack.Attachment) {
 	attachOpts := slack.MsgOptionAttachments(msg)
 	opts := []slack.MsgOption{u, attachOpts}
 
-	chanID, ts, _, err := n.slack.SendMessage(n.config.slack.Channel, opts...)
+	chanID, ts, _, err := n.slack.SendMessage(*n.chanID, opts...)
 	if err != nil {
 		log.Error().Err(err).Str("channel", chanID).Msg("failed to send update Slack notification")
 	}
