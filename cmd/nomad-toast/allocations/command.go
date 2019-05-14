@@ -33,7 +33,9 @@ func RegisterCommand(rootCmd *cobra.Command) error {
 		const (
 			key         = cfgKeyAllocIncludeCStates
 			longOpt     = cfgKeyAllocIncludeCStates
-			description = "Whitelist allocation client states. If specified, *only* these states will be included in notifications."
+			description = "Comma-separated list of allocation client states that will be whitelisted for notifications. \n" +
+				"If specified, *only* these states will be included in notifications. The set of client states is defined by the \n" +
+				"Nomad API - see the AllocClientStatus* constants in the docs: https://godoc.org/github.com/hashicorp/nomad/api#pkg-constants."
 		)
 
 		flags.StringSlice(longOpt, []string{}, description)
@@ -45,7 +47,9 @@ func RegisterCommand(rootCmd *cobra.Command) error {
 		const (
 			key         = cfgKeyAllocExcludeCStates
 			longOpt     = cfgKeyAllocExcludeCStates
-			description = "List of allocation client states that will be excluded from notifications. Takes priority over include-states."
+			description = "Comma-separated list of allocation client states that will be excluded from notifications. \n" +
+				"This takes priority over include-states. The set of client states is defined by the \n" +
+				"Nomad API - see the AllocClientStatus* constants in the docs: https://godoc.org/github.com/hashicorp/nomad/api#pkg-constants."
 		)
 
 		flags.StringSlice(longOpt, []string{}, description)

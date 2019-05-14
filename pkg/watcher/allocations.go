@@ -84,7 +84,7 @@ func isFiltered(alloc *api.AllocationListStub, allocCfg *config.AllocConfig) boo
 				return false
 			}
 		}
-		log.Debug().Str("alloc-id", alloc.ID).Str("client-status", alloc.ClientStatus).Msg("allocation client not whitelisted, omitting")
+		log.Debug().Str("alloc-id", alloc.ID).Str("client-status", alloc.ClientStatus).Msg("allocation client status not whitelisted, omitting")
 		return true
 	}
 
