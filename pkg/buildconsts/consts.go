@@ -3,8 +3,8 @@ package buildconsts
 import "fmt"
 
 var (
-	// Date is the date and time at which the platform was built.
-	Date string
+	// BuildDate is the date and time at which the platform was built.
+	BuildDate string
 
 	// GitCommit is the SHA of the commit from which the platform was built.
 	GitCommit string
@@ -36,5 +36,5 @@ func GetVersion() string {
 	}
 
 	return fmt.Sprintf("%s %s\n Date: %s\n Commit: %s\n Branch: %s\n State: %s\n Summary:%s",
-		ProjectName, Version, Date, gitCommit, GitBranch, GitState, GitSummary)
+		ProjectName, Version, BuildDate, gitCommit, GitBranch, GitState, GitSummary)
 }
