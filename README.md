@@ -39,6 +39,13 @@ nomad-toast supports the following global flags:
 
 Allocations triggers a watcher on the Nomad allocations endpoint and will notify you when allocations go through a state change. This can be helpful when keeping an eye on failed allocations, or just to have a general insight into allocation churn.
 
+The allocations command supports the following flags:
+
+* **--include-states** (comma separated list of strings: "") Comma-separated list of allocation client states that will be whitelisted for notifications. If specified, *only* these states will be included in notifications.
+* **--exclude-states** (comma separated list of strings: "") Comma-separated list of allocation client states that will be excluded from notifications. This takes priority over include-states.
+
+The set of client states is defined by the Nomad API - see the `AllocClientStatus` constants [in the API docs](https://godoc.org/github.com/hashicorp/nomad/api#pkg-constants).
+
 #### Command: `deployments`
 
 Deployments triggers a watcher on the Nomad deployments endpoint. This allows you to get notified of deployment activities on your cluster and allows stakeholders to gain insight.
