@@ -9,7 +9,7 @@ tools: ## Install the tools used to test and build
 
 build: ## Build nomad-toast for development purposes
 	@echo "==> Running $@..."
-	govvv build -o ./bin/nomad-toast ./cmd/nomad-toast -version local
+	govvv build -o ./bin/nomad-toast ./cmd/nomad-toast -version local -pkg "github.com/jrasell/nomad-toast/pkg/buildconsts"
 
 test: ## Run the nomad-toast test suite with coverage
 	@echo "==> Running $@..."
