@@ -21,11 +21,12 @@ func (n *Notifier) formatDeploymentMessage(d *api.Deployment) {
 		dt := fmt.Sprintf("%s %s\n", deadlineText, n.formatTimeToSecond(tg.RequireProgressBy))
 		da := fmt.Sprintf("%s %v\n", desiredAllocsText, tg.DesiredTotal)
 		pa := fmt.Sprintf("%s %v\n", placedAllocsText, tg.PlacedAllocs)
+		ha := fmt.Sprintf("%s %v\n", healthyAllocsText, tg.HealthyAllocs)
 		ua := fmt.Sprintf("%s %v\n", unhealthyAllocsText, tg.UnhealthyAllocs)
 
 		f = append(f, slack.AttachmentField{
 			Title: fmt.Sprintf("Task Group: %s", name),
-			Value: dt + da + pa + ua,
+			Value: dt + da + pa + ha + ua,
 			Short: false,
 		})
 	}
