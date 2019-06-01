@@ -15,6 +15,7 @@ type Notifier struct {
 	config *notifierConfig
 	slack  *slack.Client
 	state  *notifications
+	chanID *string
 
 	MsgChan chan interface{}
 
