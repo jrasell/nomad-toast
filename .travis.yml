@@ -4,7 +4,7 @@ language: go
 go:
 - "1.11"
 script:
-- make tools
+- make build-tools
 - make
 after_success:
 - if [[ -n "$TRAVIS_TAG" ]]; then make release; fi
