@@ -5,11 +5,18 @@ import (
 	"github.com/spf13/viper"
 )
 
+// AllocConfig is the nomad-toast config struct holding the config specific to allocations
+type AllocConfig struct {
+	IncludeStates []string
+	ExcludeStates []string
+}
+
 // NomadConfig is the nomad-toast Nomad client config struct.
 type NomadConfig struct {
 	AllowStale   bool
 	NomadAddress string
 	NomadRegion  string
+	AllocCfg     *AllocConfig // allocation specific config
 }
 
 const (

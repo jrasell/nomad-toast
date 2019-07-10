@@ -10,6 +10,12 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/sean-/sysexits"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
+)
+
+const (
+	cfgKeyAllocIncludeCStates = "include-states"
+	cfgKeyAllocExcludeCStates = "exclude-states"
 )
 
 // RegisterCommand is used to register the deployments nomad-toast command.
@@ -22,6 +28,35 @@ func RegisterCommand(rootCmd *cobra.Command) error {
 		},
 	}
 
+	flags := cmd.Flags()
+	{
+		const (
+			key         = cfgKeyAllocIncludeCStates
+			longOpt     = cfgKeyAllocIncludeCStates
+			description = "Comma-separated list of allocation client states that will be whitelisted for notifications. \n" +
+				"If specified, *only* these states will be included in notifications. The set of client states is defined by the \n" +
+				"Nomad API - see the AllocClientStatus* constants in the docs: https://godoc.org/github.com/hashicorp/nomad/api#pkg-constants."
+		)
+
+		flags.StringSlice(longOpt, []string{}, description)
+		_ = viper.BindPFlag(key, flags.Lookup(longOpt))
+		viper.SetDefault(key, []string{})
+	}
+
+	{
+		const (
+			key         = cfgKeyAllocExcludeCStates
+			longOpt     = cfgKeyAllocExcludeCStates
+			description = "Comma-separated list of allocation client states that will be excluded from notifications. \n" +
+				"This takes priority over include-states. The set of client states is defined by the \n" +
+				"Nomad API - see the AllocClientStatus* constants in the docs: https://godoc.org/github.com/hashicorp/nomad/api#pkg-constants."
+		)
+
+		flags.StringSlice(longOpt, []string{}, description)
+		_ = viper.BindPFlag(key, flags.Lookup(longOpt))
+		viper.SetDefault(key, []string{})
+	}
+
 	rootCmd.AddCommand(cmd)
 
 	return nil
@@ -31,7 +66,7 @@ func runDeployments(_ *cobra.Command, _ []string) {
 
 	cfg, err := getConfig()
 	if err != nil {
-		log.Error().Err(err).Msg("unable to load allocations config")
+		log.Error().Err(err).Msg("unable to load nomad-toast config")
 		os.Exit(sysexits.Software)
 	}
 
