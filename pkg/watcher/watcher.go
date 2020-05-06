@@ -39,6 +39,10 @@ func NewWatcher(cfg *config.NomadConfig, et EndpointType, mChan chan interface{}
 	d := api.DefaultConfig()
 	d.Address = cfg.NomadAddress
 
+	if cfg.NomadToken != "" {
+		d.SecretID = cfg.NomadToken
+	}
+
 	if cfg.NomadRegion != "" {
 		d.Region = cfg.NomadRegion
 	}
