@@ -10,7 +10,7 @@ type NomadConfig struct {
 	AllowStale   bool
 	NomadAddress string
 	NomadRegion  string
-	NomadToken string
+	NomadToken   string
 }
 
 const (
